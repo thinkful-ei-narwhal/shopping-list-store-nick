@@ -1,3 +1,5 @@
+'use strict';
+
 const store = {
   items: [
     { id: cuid(), name: 'apples', checked: false },
@@ -26,6 +28,10 @@ const generateItemElement = function (item) {
         <button class='shopping-item-delete js-item-delete'>
           <span class='button-label'>delete</span>
         </button>
+        <form class="change-name" >
+        <input type="text" id="input-val-${item.id}" name="change-entry-name" placeholder="Change item name...">
+        <button type="submit">Change Name</button>
+      </form>
       </div>
     </li>`;
 };
@@ -88,6 +94,22 @@ const handleItemCheckClicked = function () {
     render();
   });
 };
+
+const handleChangeName = function () {
+  $('.js-shopping-list').on('submit', '.change-name', event => {
+    event.preventDefault();
+    const id = getItemIdFromElement(event.currentTarget);
+    const newName = $(`#input-val-${id}`).val();
+    changeNameForListItem(id, newName);
+    render();
+  });
+};
+
+const changeNameForListItem = function (id, newName) {
+  const foundItem = store.items.find(item => item.id === id);
+  foundItem.name = newName;
+};
+
 
 const getItemIdFromElement = function (item) {
   return $(item)
@@ -160,6 +182,7 @@ const handleShoppingList = function () {
   handleItemCheckClicked();
   handleDeleteItemClicked();
   handleToggleFilterClick();
+  handleChangeName();
 };
 
 // when the page loads, call `handleShoppingList`
